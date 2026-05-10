@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BES103 – Functions in Python | USeP Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
+  --green:#39d353;--blue:#58a6ff;--yellow:#e3b341;--red:#f85149;
+  --purple:#bc8cff;--orange:#ffa657;--cyan:#79c0ff;
+  --text:#e6edf3;--muted:#8b949e;--white:#ffffff;
+  --radius:8px;--radius-lg:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
+code,pre,.mono{font-family:'JetBrains Mono',monospace}
+
+/* ── HEADER ── */
+header{background:linear-gradient(135deg,#0d1117 0%,#161b22 50%,#0d2340 100%);border-bottom:1px solid var(--border);padding:24px 32px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:10px;display:grid;place-items:center;font-size:20px}
+.logo-text h1{font-size:1.1rem;font-weight:800;color:var(--white)}
+.logo-text p{font-size:.75rem;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.score-badge{background:var(--surface2);border:1px solid var(--green);border-radius:20px;padding:6px 16px;font-size:.85rem;color:var(--green);font-weight:700;font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:8px}
+.score-badge span{color:var(--muted);font-weight:400}
+
+/* ── NAV TABS ── */
+.nav-wrap{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:89px;z-index:99}
+.nav-tabs{max-width:1200px;margin:0 auto;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab-btn{background:none;border:none;color:var(--muted);font-family:'Syne',sans-serif;font-size:.9rem;font-weight:600;padding:14px 20px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:7px}
+.tab-btn:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);background:rgba(88,166,255,.06)}
+.tab-icon{font-size:1rem}
+
+/* ── CONTENT ── */
+.content{max-width:1200px;margin:0 auto;padding:32px 24px}
+.tab-panel{display:none;animation:fadeIn .3s ease}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px}
+.card-title{font-size:1.2rem;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.highlight{background:linear-gradient(135deg,#0d2340,#0d1a30);border:1px solid var(--blue);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;position:relative;overflow:hidden}
+.highlight::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(88,166,255,.06) 0%,transparent 60%);pointer-events:none}
+
+/* ── CODE BLOCK ── */
+.code-block{background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);padding:20px;overflow-x:auto;margin:12px 0;position:relative}
+.code-block pre{color:var(--text);font-size:.88rem;line-height:1.7}
+.kw{color:var(--red)}
+.fn{color:var(--blue)}
+.str{color:var(--green)}
+.num{color:var(--orange)}
+.cmt{color:var(--muted);font-style:italic}
+.param{color:var(--purple)}
+.builtin{color:var(--cyan)}
+.copy-btn{position:absolute;top:10px;right:10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:.75rem;padding:4px 10px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.copy-btn:hover{color:var(--text);border-color:var(--blue)}
+
+/* ── FLOWCHART ── */
+.flow-container{display:flex;flex-direction:column;align-items:center;gap:0;padding:20px 0}
+.flow-node{border-radius:var(--radius);padding:14px 28px;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:600;text-align:center;min-width:220px;max-width:340px;position:relative;z-index:1}
+.flow-node.terminal{background:linear-gradient(135deg,#1a3a1a,#0d2a0d);border:2px solid var(--green);color:var(--green);border-radius:50px}
+.flow-node.process{background:linear-gradient(135deg,#1a2a3a,#0d1a2a);border:2px solid var(--blue);color:var(--blue)}
+.flow-node.decision{background:linear-gradient(135deg,#2a1a0d,#1a0d05);border:2px solid var(--orange);color:var(--orange);transform:perspective(60px) rotateX(5deg);clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);padding:28px 40px;min-width:260px}
+.flow-node.io{background:linear-gradient(135deg,#1a1a3a,#0d0d2a);border:2px solid var(--purple);color:var(--purple);clip-path:polygon(8% 0%,100% 0%,92% 100%,0% 100%)}
+.flow-arrow{display:flex;flex-direction:column;align-items:center;gap:0;color:var(--muted);font-size:.75rem}
+.flow-arrow .line{width:2px;height:24px;background:linear-gradient(var(--border),var(--muted));margin:0 auto}
+.flow-arrow .tip{font-size:1rem;color:var(--muted);margin-top:-4px}
+.flow-label{font-size:.72rem;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace}
+.flow-branch{display:grid;grid-template-columns:1fr 1fr;gap:40px;width:100%;max-width:600px;align-items:start}
+.flow-branch-node{display:flex;flex-direction:column;align-items:center;gap:0}
+
+/* ── GRID LAYOUTS ── */
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+
+/* ── CONCEPT CARDS ── */
+.concept-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;transition:border-color .2s}
+.concept-card:hover{border-color:var(--blue)}
+.concept-card h4{font-size:.95rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.concept-card p{font-size:.85rem;color:var(--muted);line-height:1.6}
+.tag{font-size:.7rem;background:rgba(88,166,255,.15);color:var(--blue);border-radius:4px;padding:2px 8px;font-family:'JetBrains Mono',monospace}
+.tag.green{background:rgba(57,211,83,.12);color:var(--green)}
+.tag.purple{background:rgba(188,140,255,.12);color:var(--purple)}
+.tag.orange{background:rgba(255,166,87,.12);color:var(--orange)}
+.tag.red{background:rgba(248,81,73,.12);color:var(--red)}
+
+/* ── SUBTABS ── */
+.subtab-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.subtab-btn{background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:.8rem;font-weight:600;padding:6px 14px;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.subtab-btn.active,.subtab-btn:hover{background:rgba(88,166,255,.12);border-color:var(--blue);color:var(--blue)}
+.subtab-panel{display:none}
+.subtab-panel.active{display:block;animation:fadeIn .25s ease}
+
+/* ── FLASHCARDS ── */
+.flashcard-wrap{display:flex;flex-direction:column;align-items:center;gap:24px;padding:20px 0}
+.flashcard{width:100%;max-width:600px;height:280px;perspective:1000px;cursor:pointer}
+.flashcard-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.flashcard.flipped .flashcard-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius-lg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center}
+.fc-front{background:linear-gradient(135deg,var(--surface),var(--surface2));border:2px solid var(--blue)}
+.fc-back{background:linear-gradient(135deg,#0d2a1a,#0d1a10);border:2px solid var(--green);transform:rotateY(180deg)}
+.fc-label{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:12px;font-family:'JetBrains Mono',monospace}
+.fc-question{font-size:1.05rem;font-weight:700;line-height:1.5;color:var(--text)}
+.fc-answer{font-size:.9rem;line-height:1.6;color:var(--green)}
+.fc-code{font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,.4);border-radius:6px;padding:8px 14px;font-size:.82rem;margin-top:12px;color:var(--cyan)}
+.fc-controls{display:flex;gap:12px;align-items:center}
+.fc-progress{font-size:.8rem;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.btn{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:'Syne',sans-serif;font-size:.88rem;font-weight:600;padding:10px 20px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--blue);color:var(--blue)}
+.btn.primary{background:rgba(88,166,255,.15);border-color:var(--blue);color:var(--blue)}
+.btn.primary:hover{background:rgba(88,166,255,.25)}
+.btn.success{background:rgba(57,211,83,.12);border-color:var(--green);color:var(--green)}
+.btn.danger{background:rgba(248,81,73,.12);border-color:var(--red);color:var(--red)}
+
+/* ── QUIZ ── */
+.quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.quiz-stats{display:flex;gap:16px;flex-wrap:wrap}
+.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 16px;text-align:center}
+.stat-box .val{font-size:1.4rem;font-weight:800;font-family:'JetBrains Mono',monospace}
+.stat-box .lbl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.stat-box.correct .val{color:var(--green)}
+.stat-box.wrong .val{color:var(--red)}
+.stat-box.score .val{color:var(--yellow)}
+.progress-bar-wrap{background:var(--surface2);border-radius:20px;height:6px;overflow:hidden;margin-bottom:24px}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:20px;transition:width .4s ease}
+.quiz-question-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;animation:fadeIn .3s ease}
+.q-num{font-size:.75rem;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:8px}
+.q-topic{font-size:.72rem;color:var(--blue);background:rgba(88,166,255,.1);border-radius:4px;padding:2px 8px;display:inline-block;margin-bottom:10px;font-family:'JetBrains Mono',monospace}
+.q-text{font-size:1rem;font-weight:600;line-height:1.6;margin-bottom:16px}
+.q-code{background:#0d1117;border:1px solid var(--border);border-radius:6px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--cyan);margin-bottom:14px;overflow-x:auto}
+.options{display:grid;gap:8px}
+.option{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;cursor:pointer;font-size:.9rem;transition:all .2s;text-align:left;font-family:'Syne',sans-serif;color:var(--text)}
+.option:hover:not(.revealed){border-color:var(--blue);background:rgba(88,166,255,.08)}
+.option.correct{border-color:var(--green)!important;background:rgba(57,211,83,.12)!important;color:var(--green)}
+.option.wrong{border-color:var(--red)!important;background:rgba(248,81,73,.1)!important;color:var(--red)}
+.option.revealed{cursor:default}
+.explanation{background:rgba(57,211,83,.06);border:1px solid rgba(57,211,83,.3);border-radius:var(--radius);padding:12px 16px;font-size:.85rem;color:var(--muted);margin-top:10px;line-height:1.6;display:none}
+.explanation.show{display:block;animation:fadeIn .3s ease}
+.quiz-nav{display:flex;gap:12px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+.results-box{background:linear-gradient(135deg,#0d2a1a,#0d1117);border:2px solid var(--green);border-radius:var(--radius-lg);padding:40px;text-align:center;display:none}
+.results-box.show{display:block;animation:fadeIn .5s ease}
+.results-grade{font-size:5rem;font-weight:800;font-family:'JetBrains Mono',monospace;line-height:1}
+.results-pct{font-size:1.5rem;color:var(--muted);margin-top:8px}
+.results-msg{font-size:1.1rem;margin-top:20px;line-height:1.6}
+
+/* ── GAME ── */
+.game-wrap{max-width:680px;margin:0 auto}
+.game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.game-score{font-size:1.4rem;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--yellow)}
+.game-lives{font-size:1.2rem}
+.game-timer{font-size:1rem;font-family:'JetBrains Mono',monospace;color:var(--orange)}
+.game-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--radius-lg);padding:28px;text-align:center;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.game-question{font-size:1.1rem;font-weight:700;line-height:1.5}
+.game-code{font-family:'JetBrains Mono',monospace;background:#0d1117;border-radius:6px;padding:10px 16px;font-size:.88rem;color:var(--cyan);margin:8px 0}
+.game-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.game-opt{background:var(--surface2);border:2px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;font-size:.9rem;font-family:'Syne',sans-serif;transition:all .15s;font-weight:600}
+.game-opt:hover{border-color:var(--yellow);background:rgba(227,179,65,.1);transform:translateY(-2px)}
+.game-opt.correct-anim{border-color:var(--green);background:rgba(57,211,83,.2);color:var(--green)}
+.game-opt.wrong-anim{border-color:var(--red);background:rgba(248,81,73,.15);color:var(--red)}
+.timer-bar{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.timer-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--yellow),var(--red));border-radius:3px;transition:width .1s linear}
+.streak-badge{background:rgba(227,179,65,.15);border:1px solid var(--yellow);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--yellow);font-family:'JetBrains Mono',monospace}
+.game-over{text-align:center;padding:40px;display:none}
+.game-over.show{display:block;animation:fadeIn .4s ease}
+.big-score{font-size:4rem;font-weight:800;color:var(--yellow);font-family:'JetBrains Mono',monospace}
+
+/* ── SECTIONS ── */
+.section-title{font-size:1.5rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.section-sub{font-size:.9rem;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:.78rem;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.compare-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.compare-wrap{grid-template-columns:1fr}.game-options{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}}
+.divider{border:none;border-top:1px solid var(--border);margin:24px 0}
+.info-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
+.info-icon{font-size:1.1rem;margin-top:2px;flex-shrink:0}
+.info-text{font-size:.88rem;color:var(--muted);line-height:1.7}
+.info-text strong{color:var(--text)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🐍</div>
+      <div class="logo-text">
+        <h1>Functions in Python</h1>
+        <p>BES103 · USeP College of Engineering</p>
+      </div>
+    </div>
+    <div class="score-badge">⚡ XP <span id="global-xp">0</span></div>
+  </div>
+</header>
+
+<div class="nav-wrap">
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showTab('overview')"><span class="tab-icon">🏠</span> Overview</button>
+    <button class="tab-btn" onclick="showTab('flowchart')"><span class="tab-icon">📊</span> Flowchart</button>
+    <button class="tab-btn" onclick="showTab('topics')"><span class="tab-icon">📖</span> Topics</button>
+    <button class="tab-btn" onclick="showTab('flashcards')"><span class="tab-icon">🃏</span> Flashcards</button>
+    <button class="tab-btn" onclick="showTab('game')"><span class="tab-icon">🎮</span> Code Blitz</button>
+    <button class="tab-btn" onclick="showTab('quiz')"><span class="tab-icon">📝</span> Quiz (75)</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ OVERVIEW ═══════════════════ -->
+<div id="tab-overview" class="tab-panel active">
+<div class="content">
+  <div class="section-title">🏠 Course Overview</div>
+  <div class="section-sub">BES103 – Electronics Engineering Program · University of Southeastern Philippines</div>
+
+  <div class="highlight">
+    <div class="card-title" style="color:var(--blue)">📌 What is a Function?</div>
+    <div class="grid-3">
+      <div class="concept-card">
+        <h4>🧱 <span class="tag">Organized</span></h4>
+        <p>A function is a <strong>block of organized, reusable code</strong> that performs a single, related action.</p>
+      </div>
+      <div class="concept-card">
+        <h4>🔁 <span class="tag green">Reusable</span></h4>
+        <p>Functions provide a high degree of <strong>code reusing</strong> — write once, call many times.</p>
+      </div>
+      <div class="concept-card">
+        <h4>🧩 <span class="tag purple">Modular</span></h4>
+        <p>Functions provide <strong>better modularity</strong> for applications by breaking code into logical pieces.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 Topics Covered</div>
+    <div class="grid-3">
+      <div class="concept-card"><h4>1️⃣ Define Functions</h4><p>Using <code>def</code> keyword to create a function block</p></div>
+      <div class="concept-card"><h4>2️⃣ Calling a Function</h4><p>Invoking defined functions from anywhere in code</p></div>
+      <div class="concept-card"><h4>3️⃣ Arguments & Parameters</h4><p>Passing data into functions via parameters</p></div>
+      <div class="concept-card"><h4>4️⃣ Return Values</h4><p>Using <code>return</code> to send data back from a function</p></div>
+      <div class="concept-card"><h4>5️⃣ Default Arguments</h4><p>Setting fallback values with the <code>=</code> operator</p></div>
+      <div class="concept-card"><h4>6️⃣ Keyword Arguments</h4><p>Sending args using <code>key=value</code> syntax</p></div>
+      <div class="concept-card"><h4>7️⃣ *args (Arbitrary)</h4><p>Accepting unknown number of positional arguments</p></div>
+      <div class="concept-card"><h4>8️⃣ **kwargs</h4><p>Accepting unknown number of keyword arguments</p></div>
+      <div class="concept-card"><h4>9️⃣ Passing a List</h4><p>Any data type including lists can be an argument</p></div>
+      <div class="concept-card"><h4>🔟 Functions as Objects</h4><p>Functions can be assigned to variables like values</p></div>
+      <div class="concept-card"><h4>⏭ pass Statement</h4><p>Placeholder for empty function definitions</p></div>
+      <div class="concept-card"><h4>↩ Multiple Returns</h4><p>Returning more than one value simultaneously</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔑 Key Syntax Quick Reference</div>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      <pre><span class="cmt"># Basic function definition</span>
+<span class="kw">def</span> <span class="fn">function_name</span>(<span class="param">parameters</span>):
+    statement_1
+    statement_2
+    <span class="kw">return</span> [expression]
+
+<span class="cmt"># Calling a function</span>
+<span class="fn">function_name</span>()
+
+<span class="cmt"># Function with default argument</span>
+<span class="kw">def</span> <span class="fn">greet</span>(<span class="param">name</span>=<span class="str">"World"</span>):
+    <span class="builtin">print</span>(<span class="str">f"Hello, {<span class="param">name</span>}!"</span>)
+
+<span class="cmt"># Keyword argument call</span>
+<span class="fn">greet</span>(<span class="param">name</span>=<span class="str">"Alice"</span>)
+
+<span class="cmt"># *args — arbitrary positional</span>
+<span class="kw">def</span> <span class="fn">my_func</span>(<span class="param">*args</span>):  <span class="cmt"># receives tuple</span>
+    <span class="kw">pass</span>
+
+<span class="cmt"># **kwargs — arbitrary keyword</span>
+<span class="kw">def</span> <span class="fn">my_func</span>(<span class="param">**kwargs</span>):  <span class="cmt"># receives dict</span>
+    <span class="kw">pass</span>
+</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Types of Functions</div>
+    <div class="grid-2">
+      <div class="concept-card">
+        <h4>🏗 Built-in Functions <span class="tag">Python provides</span></h4>
+        <p>Functions already available in Python: <code>print()</code>, <code>len()</code>, <code>range()</code>, <code>int()</code>, <code>input()</code>, <code>type()</code>, <code>abs()</code>, <code>math.sqrt()</code></p>
+      </div>
+      <div class="concept-card">
+        <h4>✏️ User-Defined Functions <span class="tag green">You create</span></h4>
+        <p>Functions you define yourself using the <code>def</code> keyword to perform custom tasks specific to your program.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ FLOWCHART ═══════════════════ -->
+<div id="tab-flowchart" class="tab-panel">
+<div class="content">
+  <div class="section-title">📊 Function Execution Flowcharts</div>
+  <div class="section-sub">These diagrams are core exam material — study them carefully!</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title" style="color:var(--blue)">🔄 How a Function Works</div>
+      <div class="flow-container">
+        <div class="flow-node terminal">START</div>
+        <div class="flow-arrow"><div class="line"></div><div class="tip">▼</div></div>
+        <div class="flow-node process">Define Function<br><code style="font-size:.75rem">def function_name(params):</code></div>
+        <div class="flow-arrow"><div class="line"></div><div class="tip">▼</div></div>
+        <div class="flow-node io">Function Call<br><code style="font-size:.75rem">function_name(arguments)</code></div>
+        <div class="flow-arrow"><div class="line"></div><div class="tip">▼</div></div>
+        <div class="flow-node process">Execute Function Body<br><small style="font-size:.72rem;color:var(--muted)">statements run top-to-bottom</small></div>
+        <div class="flow-arrow"><div class="line"></div><div class="tip">▼</div></div>
+        <div class="flow-node process" style="border-color:var(--orange);color:var(--orange)">return statement?</div>
+        <div class="flow-arrow"><div class="line"></div><div class="tip">▼</div></div>
+        <div style="display:flex;gap:30px;width:100%;max-width:400px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+            <div style="font-size:.72rem;color:var(--green);font-family:'JetBrains Mono',monospace">YES</div>
+            <div class="flow-node process" style="min-width:0;padding:10px;font-size:.8rem;border-color:var(--green);color:var(--green)">Return Value<br>to Caller</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+            <div style="font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace">NO</div>
+            <div class="flow-node process" style="min-width:0;padding:10px;font-size:.8rem;border-color:var(--muted);color:var(--muted)">Return None<br>implicitly</div>
+          </div>
+        </div>
+        <div class="flow-arrow"><div class="line"></div><div class="tip">▼</div></div>
+        <div class="flow-node process">Continue Execution<br>after function call</div>
+        <div class="flow-arrow"><div class="line"></div><div class="tip">▼</div></div>
+        <div class="flow-node terminal">END</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="color:var(--purple)">📥 Argument Passing Flow</div>
+      <div class="flow-container">
+        <div class="flow-node terminal">Caller</div>
+        <div class="flow-arrow"><div class="line"></div><div class="tip">▼</div></div>
+        <div class="flow-node io">Provides Arguments<br><code style="font-size:.72rem">"Emil", "Tobias", "Linus"</code></div>
+        <div class="flow-arrow"><div class="line"></div><div class="tip">▼</div></div>
+        <div class="flow-node process" style="border-color:var(--orange);color:var(--orange)">Argument Type?</div>
+        <div style="display:flex;gap:16px;width:100%;max-width:500px;flex-wrap:wrap;justify-content:center">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:.65rem;color:var(--blue);font-family:'JetBrains Mono',monospace">Positional</div>
+            <div class="flow-node process" style="min-width:0;padding:8px 12px;font-size:.72rem">Matched by<br>order/position</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:.65rem;color:var(--green);font-family:'JetBrains Mono',monospace">Keyword</div>
+            <div class="flow-node process" style="min-width:0;padding:8px 12px;font-size:.72rem;border-color:var(--green);color:var(--green)">Matched by<br>name=value</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:.65rem;color:var(--purple);font-family:'JetBrains Mono',monospace">*args</div>
+            <div class="flow-node process" style="min-width:0;padding:8px 12px;font-size:.72rem;border-color:var(--purple);color:var(--purple)">Packed into<br>tuple</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:.65rem;color:var(--orange);font-family:'JetBrains Mono',monospace">**kwargs</div>
+            <div class="flow-node process" style="min-width:0;padding:8px 12px;font-size:.72rem;border-color:var(--orange);color:var(--orange)">Packed into<br>dict</div>
+          </div>
+        </div>
+        <div class="flow-arrow"><div class="line"></div><div class="tip">▼</div></div>
+        <div class="flow-node process">Parameters receive values<br><small style="font-size:.72rem;color:var(--muted)">local scope inside function</small></div>
+        <div class="flow-arrow"><div class="line"></div><div class="tip">▼</div></div>
+        <div class="flow-node terminal">Function Body Executes</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--green)">⚙️ Function Definition Syntax Breakdown</div>
+    <div style="display:flex;justify-content:center;padding:20px 0">
+      <div style="position:relative;max-width:700px;width:100%">
+        <div style="background:#0d1117;border:1px solid var(--border);border-radius:var(--radius);padding:28px;font-family:'JetBrains Mono',monospace;font-size:1.1rem;text-align:center">
+          <span style="color:var(--red)">def</span> <span style="color:var(--blue)">function_name</span><span style="color:var(--muted)">(</span><span style="color:var(--purple)">parameters</span><span style="color:var(--muted)">)</span><span style="color:var(--orange)">:</span>
+          <br><span style="margin-left:40px;color:var(--cyan)">statement_1</span>
+          <br><span style="margin-left:40px;color:var(--cyan)">statement_2</span>
+          <br><span style="margin-left:40px;color:var(--red)">return</span> <span style="color:var(--green)">[expression]</span>
+        </div>
+        <div class="grid-2" style="margin-top:16px">
+          <div class="concept-card"><h4 style="color:var(--red)">🔑 def keyword</h4><p>Introduces a function definition. Must be followed by function name and parentheses.</p></div>
+          <div class="concept-card"><h4 style="color:var(--blue)">🏷 function_name</h4><p>Identifier for the function. Use snake_case naming convention.</p></div>
+          <div class="concept-card"><h4 style="color:var(--purple)">📥 parameters</h4><p>Variables inside parentheses that receive argument values. Optional.</p></div>
+          <div class="concept-card"><h4 style="color:var(--orange)">: colon</h4><p>The code block within every function starts with a colon. Required.</p></div>
+          <div class="concept-card"><h4 style="color:var(--cyan)">📄 statements</h4><p>The function body — indented code that runs when the function is called.</p></div>
+          <div class="concept-card"><h4 style="color:var(--green)">↩ return</h4><p>Exits the function and optionally sends a value back to the caller.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--yellow)">📞 Function Call Flow Diagram</div>
+    <div class="flow-container">
+      <div style="display:flex;align-items:flex-start;gap:60px;width:100%;max-width:700px;flex-wrap:wrap;justify-content:center">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;min-width:200px">
+          <div style="font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">Main Program</div>
+          <div class="flow-node process" style="font-size:.8rem">Code runs...</div>
+          <div class="flow-arrow"><div class="line"></div></div>
+          <div class="flow-node io" style="font-size:.8rem">function_name() ──────►</div>
+          <div class="flow-arrow"><div class="line"></div></div>
+          <div class="flow-node process" style="font-size:.8rem;border-style:dashed;opacity:.5">waiting...</div>
+          <div class="flow-arrow"><div class="line"></div></div>
+          <div class="flow-node process" style="font-size:.8rem">◄────── receives return</div>
+          <div class="flow-arrow"><div class="line"></div></div>
+          <div class="flow-node process" style="font-size:.8rem">Continues execution</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;min-width:200px">
+          <div style="font-size:.8rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">Function</div>
+          <div style="height:60px"></div>
+          <div class="flow-arrow"><div class="line"></div></div>
+          <div class="flow-node terminal" style="font-size:.8rem">def function_name():</div>
+          <div class="flow-arrow"><div class="line"></div></div>
+          <div class="flow-node process" style="font-size:.8rem">Execute body</div>
+          <div class="flow-arrow"><div class="line"></div></div>
+          <div class="flow-node process" style="border-color:var(--green);color:var(--green);font-size:.8rem">return value ──────►</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ TOPICS ═══════════════════ -->
+<div id="tab-topics" class="tab-panel">
+<div class="content">
+  <div class="section-title">📖 All Topics</div>
+  <div class="subtab-wrap" id="topic-subtabs">
+    <button class="subtab-btn active" onclick="showSubtab('t-define')">1. Define</button>
+    <button class="subtab-btn" onclick="showSubtab('t-call')">2. Call</button>
+    <button class="subtab-btn" onclick="showSubtab('t-args')">3. Args & Params</button>
+    <button class="subtab-btn" onclick="showSubtab('t-return')">4. Return</button>
+    <button class="subtab-btn" onclick="showSubtab('t-default')">5. Default</button>
+    <button class="subtab-btn" onclick="showSubtab('t-keyword')">6. Keyword</button>
+    <button class="subtab-btn" onclick="showSubtab('t-arbitrary')">7. *args/**kwargs</button>
+    <button class="subtab-btn" onclick="showSubtab('t-list')">8. Pass List</button>
+    <button class="subtab-btn" onclick="showSubtab('t-pass')">9. pass</button>
+    <button class="subtab-btn" onclick="showSubtab('t-multireturn')">10. Multi-Return</button>
+    <button class="subtab-btn" onclick="showSubtab('t-objects')">11. As Objects</button>
+  </div>
+
+  <!-- DEFINE -->
+  <div id="subtab-t-define" class="subtab-panel active">
+    <div class="card-title">1️⃣ Defining a Function</div>
+    <div class="info-row"><div class="info-icon">📌</div><div class="info-text">Use the <strong>def</strong> keyword to define a function. The function body must be indented. Defining a function does NOT execute it — it only registers the block of code.</div></div>
+    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cmt"># Simplest function definition</span>
+<span class="kw">def</span> <span class="fn">my_function</span>():
+    <span class="builtin">print</span>(<span class="str">"Hello From My Function!"</span>)
+
+<span class="cmt"># Function with a parameter</span>
+<span class="kw">def</span> <span class="fn">func1</span>():
+    <span class="builtin">print</span>(<span class="str">"I am learning Python Function"</span>)
+
+<span class="cmt"># Calling it:</span>
+<span class="fn">func1</span>()   <span class="cmt"># Output: I am learning Python Function</span></pre></div>
+    <div class="highlight">
+      <div class="card-title" style="font-size:1rem">💡 Key Rules for Defining Functions</div>
+      <div class="info-row"><div class="info-icon">1</div><div class="info-text">Must start with the <strong style="color:var(--red)">def</strong> keyword</div></div>
+      <div class="info-row"><div class="info-icon">2</div><div class="info-text">Function name must follow Python identifier rules (no spaces, no starting with numbers)</div></div>
+      <div class="info-row"><div class="info-icon">3</div><div class="info-text">Parentheses <strong>()</strong> are required even with no parameters</div></div>
+      <div class="info-row"><div class="info-icon">4</div><div class="info-text">A colon <strong style="color:var(--orange)">:</strong> ends the function header</div></div>
+      <div class="info-row"><div class="info-icon">5</div><div class="info-text">The function body must be <strong>indented</strong> (4 spaces or 1 tab)</div></div>
+    </div>
+  </div>
+
+  <!-- CALL -->
+  <div id="subtab-t-call" class="subtab-panel">
+    <div class="card-title">2️⃣ Calling a Function</div>
+    <div class="info-row"><div class="info-icon">📌</div><div class="info-text">Once a function is defined, you can <strong>call</strong> it from another function, a program, or the Python prompt. Simply write the function name followed by parentheses.</div></div>
+    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="kw">def</span> <span class="fn">my_function</span>():
+    <span class="builtin">print</span>(<span class="str">"Hello From My Function!"</span>)
+
+<span class="cmt"># Calling the function — executes its body</span>
+<span class="fn">my_function</span>()
+<span class="cmt"># Output: Hello From My Function!</span>
+
+<span class="cmt"># Can be called multiple times</span>
+<span class="fn">my_function</span>()
+<span class="fn">my_function</span>()
+<span class="fn">my_function</span>()</pre></div>
+    <div class="highlight">
+      <div class="card-title" style="font-size:1rem;color:var(--yellow)">⚠️ Common Mistake</div>
+      <div class="compare-wrap">
+        <div><div class="tag red" style="margin-bottom:8px">❌ Wrong</div><div class="code-block"><pre><span class="cmt"># This just references the function object</span>
+<span class="cmt"># (does NOT call it)</span>
+<span class="fn">my_function</span>   <span class="cmt"># no parentheses!</span></pre></div></div>
+        <div><div class="tag green" style="margin-bottom:8px">✅ Correct</div><div class="code-block"><pre><span class="cmt"># This CALLS the function</span>
+<span class="fn">my_function</span>()  <span class="cmt"># parentheses required!</span></pre></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARGS -->
+  <div id="subtab-t-args" class="subtab-panel">
+    <div class="card-title">3️⃣ Arguments and Parameters</div>
+    <div class="grid-2" style="margin-bottom:16px">
+      <div class="concept-card"><h4>📥 Parameter <span class="tag">Definition side</span></h4><p>The variable listed <strong>inside the parentheses in the function definition</strong>. It's a placeholder.</p></div>
+      <div class="concept-card"><h4>📤 Argument <span class="tag green">Call side</span></h4><p>The actual <strong>value passed when calling</strong> the function. It fills in the parameter.</p></div>
+    </div>
+    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="kw">def</span> <span class="fn">my_function</span>(<span class="param">fname</span>):         <span class="cmt"># fname is the PARAMETER</span>
+    <span class="builtin">print</span>(<span class="str">f"Hello, {<span class="param">fname</span>}!"</span>)
+
+<span class="fn">my_function</span>(<span class="str">"Alice"</span>)               <span class="cmt"># "Alice" is the ARGUMENT</span>
+<span class="fn">my_function</span>(<span class="str">"Bob"</span>)                 <span class="cmt"># "Bob" is the ARGUMENT</span>
+<span class="cmt"># Output:</span>
+<span class="cmt"># Hello, Alice!</span>
+<span class="cmt"># Hello, Bob!</span>
+
+<span class="cmt"># Another example with greet:</span>
+<span class="kw">def</span> <span class="fn">greet</span>(<span class="param">name</span>):
+    <span class="builtin">print</span>(<span class="str">f"Hello, {<span class="param">name</span>}!"</span>)
+
+<span class="fn">greet</span>(<span class="str">"Alice"</span>)   <span class="cmt"># Output: Hello, Alice!</span></pre></div>
+  </div>
+
+  <!-- RETURN -->
+  <div id="subtab-t-return" class="subtab-panel">
+    <div class="card-title">4️⃣ Return Values</div>
+    <div class="info-row"><div class="info-icon">📌</div><div class="info-text">Use the <strong>return</strong> statement to send a value back from a function. The return statement also <strong>exits</strong> the function block immediately.</div></div>
+    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="kw">def</span> <span class="fn">my_function</span>(<span class="param">x</span>):
+    <span class="kw">return</span> <span class="num">5</span> * <span class="param">x</span>
+
+<span class="builtin">print</span>(<span class="fn">my_function</span>(<span class="num">3</span>))   <span class="cmt"># Output: 15</span>
+<span class="builtin">print</span>(<span class="fn">my_function</span>(<span class="num">5</span>))   <span class="cmt"># Output: 25</span>
+<span class="builtin">print</span>(<span class="fn">my_function</span>(<span class="num">9</span>))   <span class="cmt"># Output: 45</span></pre></div>
+    <div class="compare-wrap">
+      <div class="concept-card"><h4>🔵 Without return</h4><div class="code-block"><pre><span class="kw">def</span> <span class="fn">square</span>(<span class="param">n</span>):
+    res = <span class="param">n</span> * <span class="param">n</span>
+    <span class="builtin">print</span>(res) <span class="cmt"># prints inside</span>
+
+<span class="cmt"># Can't use result elsewhere</span>
+val = <span class="fn">square</span>(<span class="num">4</span>)  <span class="cmt"># val = None</span></pre></div></div>
+      <div class="concept-card"><h4>🟢 With return</h4><div class="code-block"><pre><span class="kw">def</span> <span class="fn">square</span>(<span class="param">n</span>):
+    res = <span class="param">n</span> * <span class="param">n</span>
+    <span class="kw">return</span> res  <span class="cmt"># sends back</span>
+
+<span class="cmt"># Can use result elsewhere</span>
+val = <span class="fn">square</span>(<span class="num">4</span>)  <span class="cmt"># val = 16</span></pre></div></div>
+    </div>
+  </div>
+
+  <!-- DEFAULT -->
+  <div id="subtab-t-default" class="subtab-panel">
+    <div class="card-title">5️⃣ Default Arguments</div>
+    <div class="info-row"><div class="info-icon">📌</div><div class="info-text">You can give a parameter a <strong>default value</strong> using the assignment operator <code>=</code>. If no argument is provided, the default is used.</div></div>
+    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="kw">def</span> <span class="fn">calculateTotal</span>(<span class="param">amount</span>, <span class="param">discountPercentage</span>=<span class="num">0</span>):
+    discountAmount = <span class="param">discountPercentage</span> / <span class="num">100</span> * <span class="param">amount</span>
+    <span class="kw">return</span> <span class="param">amount</span> - discountAmount
+
+amount = <span class="num">500</span>
+
+<span class="cmt"># With explicit discount</span>
+totalBillAmount = <span class="fn">calculateTotal</span>(amount, <span class="num">10</span>)
+<span class="builtin">print</span>(totalBillAmount)   <span class="cmt"># Output: 450.0</span>
+
+<span class="cmt"># Without discount — uses default (0)</span>
+totalBillAmount = <span class="fn">calculateTotal</span>(amount)
+<span class="builtin">print</span>(totalBillAmount)   <span class="cmt"># Output: 500.0</span></pre></div>
+    <div class="highlight">
+      <div class="card-title" style="font-size:1rem;color:var(--yellow)">⚠️ Default Argument Rule</div>
+      <p style="font-size:.88rem;color:var(--muted)">Default arguments must come <strong style="color:var(--text)">after</strong> non-default arguments in the parameter list. You cannot put a default parameter before a required one.</p>
+    </div>
+  </div>
+
+  <!-- KEYWORD -->
+  <div id="subtab-t-keyword" class="subtab-panel">
+    <div class="card-title">6️⃣ Keyword Arguments</div>
+    <div class="info-row"><div class="info-icon">📌</div><div class="info-text">Send arguments using the <strong>key=value</strong> syntax. The order doesn't matter — values are matched by name, not position.</div></div>
+    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="kw">def</span> <span class="fn">my_function</span>(<span class="param">child3</span>, <span class="param">child2</span>, <span class="param">child1</span>):
+    <span class="builtin">print</span>(<span class="str">"The youngest child is "</span> + <span class="param">child3</span>)
+
+<span class="cmt"># Order doesn't matter when using keyword args</span>
+<span class="fn">my_function</span>(<span class="param">child1</span>=<span class="str">"Emil"</span>, <span class="param">child2</span>=<span class="str">"Tobias"</span>, <span class="param">child3</span>=<span class="str">"Linus"</span>)
+<span class="cmt"># Output: The youngest child is Linus</span></pre></div>
+    <div class="grid-2">
+      <div class="concept-card"><h4>✅ Advantages</h4><p>Order doesn't matter · More readable · Reduces argument confusion · Can skip optional args</p></div>
+      <div class="concept-card"><h4>📝 Note</h4><p>Keyword arguments are also known as <strong>kwargs</strong>. The key name must match the parameter name exactly.</p></div>
+    </div>
+  </div>
+
+  <!-- ARBITRARY -->
+  <div id="subtab-t-arbitrary" class="subtab-panel">
+    <div class="card-title">7️⃣ Arbitrary Arguments (*args and **kwargs)</div>
+    <div class="compare-wrap" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-title" style="font-size:1rem;color:var(--purple)">*args — Positional</div>
+        <div class="info-row"><div class="info-icon">📌</div><div class="info-text">Add a <strong>*</strong> before the parameter. Function receives a <strong>tuple</strong> of all positional arguments.</div></div>
+        <div class="code-block"><pre><span class="kw">def</span> <span class="fn">my_function</span>(<span class="param">*kids</span>):
+    <span class="builtin">print</span>(<span class="str">"Youngest: "</span> + <span class="param">kids</span>[<span class="num">2</span>])
+
+<span class="fn">my_function</span>(<span class="str">"Emil"</span>,<span class="str">"Tobias"</span>,<span class="str">"Linus"</span>)
+<span class="cmt"># Output: Youngest: Linus</span>
+
+<span class="cmt"># mysum example</span>
+<span class="kw">def</span> <span class="fn">mysum</span>(<span class="param">*a</span>):
+    total = <span class="num">0</span>
+    <span class="kw">for</span> ele <span class="kw">in</span> <span class="param">a</span>:
+        total += ele
+    <span class="kw">return</span> total
+
+<span class="builtin">print</span>(<span class="fn">mysum</span>(<span class="num">5</span>, <span class="num">2</span>, <span class="num">9</span>, <span class="num">4</span>))  <span class="cmt"># 20</span></pre></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="font-size:1rem;color:var(--orange)">**kwargs — Keyword</div>
+        <div class="info-row"><div class="info-icon">📌</div><div class="info-text">Add <strong>**</strong> before the parameter. Function receives a <strong>dictionary</strong> of all keyword arguments.</div></div>
+        <div class="code-block"><pre><span class="kw">def</span> <span class="fn">my_function</span>(<span class="param">**kid</span>):
+    <span class="builtin">print</span>(<span class="str">"Last name: "</span>+<span class="param">kid</span>[<span class="str">"lname"</span>])
+
+<span class="fn">my_function</span>(<span class="param">fname</span>=<span class="str">"Tobias"</span>,
+            <span class="param">lname</span>=<span class="str">"Refsnes"</span>)
+<span class="cmt"># Output: Last name: Refsnes</span>
+
+<span class="cmt"># mymax example</span>
+<span class="kw">def</span> <span class="fn">mymax</span>(<span class="param">a</span>, <span class="param">*b</span>):
+    large = <span class="param">a</span>
+    <span class="kw">for</span> ele <span class="kw">in</span> <span class="param">b</span>:
+        <span class="kw">if</span> ele > large:
+            large = ele
+    <span class="kw">return</span> large
+
+<span class="builtin">print</span>(<span class="fn">mymax</span>(<span class="num">4</span>,<span class="num">5</span>,<span class="num">7</span>,<span class="num">3</span>,<span class="num">1</span>,<span class="num">8</span>,<span class="num">2</span>))  <span class="cmt"># 8</span></pre></div>
+      </div>
+    </div>
+    <div class="highlight">
+      <div class="card-title" style="font-size:1rem">📊 Quick Comparison</div>
+      <div class="grid-3">
+        <div class="concept-card"><h4>Positional args</h4><p><code>func(1, 2, 3)</code><br>Matched by position</p></div>
+        <div class="concept-card"><h4>*args</h4><p><code>func(1,2,3,4,5)</code><br>Packed into tuple — any number</p></div>
+        <div class="concept-card"><h4>**kwargs</h4><p><code>func(a=1,b=2)</code><br>Packed into dict — named pairs</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <div id="subtab-t-list" class="subtab-panel">
+    <div class="card-title">8️⃣ Passing a List as an Argument</div>
+    <div class="info-row"><div class="info-icon">📌</div><div class="info-text">You can send <strong>any data type</strong> as an argument — strings, numbers, lists, dictionaries, tuples, etc. They are treated as the same data type inside the function.</div></div>
+    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="kw">def</span> <span class="fn">my_function</span>(<span class="param">food</span>):
+    <span class="kw">for</span> x <span class="kw">in</span> <span class="param">food</span>:
+        <span class="builtin">print</span>(x)
+
+fruits = [<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>]
+<span class="fn">my_function</span>(fruits)
+<span class="cmt"># Output:</span>
+<span class="cmt"># apple</span>
+<span class="cmt"># banana</span>
+<span class="cmt"># cherry</span>
+
+<span class="cmt"># Can also pass directly</span>
+<span class="fn">my_function</span>([<span class="str">"mango"</span>, <span class="str">"grape"</span>])</pre></div>
+  </div>
+
+  <!-- PASS -->
+  <div id="subtab-t-pass" class="subtab-panel">
+    <div class="card-title">9️⃣ The pass Statement</div>
+    <div class="info-row"><div class="info-icon">📌</div><div class="info-text">Function definitions <strong>cannot be empty</strong>. If you need an empty function (placeholder), use the <strong>pass</strong> statement to avoid a syntax error.</div></div>
+    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="cmt"># This causes an error!</span>
+<span class="kw">def</span> <span class="fn">myfunction</span>():
+    <span class="cmt"># IndentationError: expected an indented block</span>
+
+<span class="cmt"># Correct way — use pass</span>
+<span class="kw">def</span> <span class="fn">myfunction</span>():
+    <span class="kw">pass</span>   <span class="cmt"># valid placeholder</span>
+
+<span class="cmt"># pass is also used in loops, if statements, classes</span></pre></div>
+    <div class="highlight">
+      <div class="card-title" style="font-size:1rem">💡 When to use pass</div>
+      <p style="font-size:.88rem;color:var(--muted)">When you're writing code and want to create a function structure first without filling in the body yet. It lets you write the "skeleton" of your program first and fill in details later.</p>
+    </div>
+  </div>
+
+  <!-- MULTI RETURN -->
+  <div id="subtab-t-multireturn" class="subtab-panel">
+    <div class="card-title">🔟 Function Returning Multiple Values</div>
+    <div class="info-row"><div class="info-icon">📌</div><div class="info-text">Python allows a function to <strong>return more than one value</strong> by separating them with commas. They are returned as a <strong>tuple</strong>.</div></div>
+    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="kw">import</span> math
+
+<span class="kw">def</span> <span class="fn">quadEquation</span>(<span class="param">a</span>, <span class="param">b</span>, <span class="param">c</span>):
+    x1 = (-<span class="param">b</span> + math.sqrt(<span class="param">b</span>**<span class="num">2</span> - <span class="num">4</span>*<span class="param">a</span>*<span class="param">c</span>)) / (<span class="num">2</span>*<span class="param">a</span>)
+    x2 = (-<span class="param">b</span> - math.sqrt(<span class="param">b</span>**<span class="num">2</span> - <span class="num">4</span>*<span class="param">a</span>*<span class="param">c</span>)) / (<span class="num">2</span>*<span class="param">a</span>)
+    <span class="kw">return</span> x1, x2   <span class="cmt"># returns a tuple</span>
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    a = <span class="builtin">int</span>(<span class="builtin">input</span>(<span class="str">"Enter the value of a: "</span>))
+    b = <span class="builtin">int</span>(<span class="builtin">input</span>(<span class="str">"Enter the value of b: "</span>))
+    c = <span class="builtin">int</span>(<span class="builtin">input</span>(<span class="str">"Enter the value of c: "</span>))
+    x1, x2 = <span class="fn">quadEquation</span>(a, b, c)  <span class="cmt"># tuple unpacking</span>
+    <span class="builtin">print</span>(x1, x2)</pre></div>
+    <div class="highlight">
+      <p style="font-size:.88rem;color:var(--muted)">This program solves the quadratic formula <strong style="color:var(--cyan)">ax² + bx + c = 0</strong> and returns both roots x₁ and x₂. The values are unpacked into two separate variables on the receiving side.</p>
+    </div>
+  </div>
+
+  <!-- OBJECTS -->
+  <div id="subtab-t-objects" class="subtab-panel">
+    <div class="card-title">1️⃣1️⃣ Functions as Objects</div>
+    <div class="info-row"><div class="info-icon">📌</div><div class="info-text">In Python, functions are <strong>first-class objects</strong>. Although created differently from normal variables, they can be <strong>assigned to variables</strong>, passed as arguments, stored in data structures, and referenced by different names.</div></div>
+    <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><span class="kw">def</span> <span class="fn">multiply</span>(<span class="param">x</span>, <span class="param">y</span>):
+    <span class="kw">return</span> <span class="param">x</span> * <span class="param">y</span>
+
+a = <span class="num">4</span>
+b = <span class="num">7</span>
+
+<span class="cmt"># Assign function to variable (no parentheses!)</span>
+operation = <span class="fn">multiply</span>
+
+<span class="cmt"># Call via the variable</span>
+<span class="builtin">print</span>(operation(a, b))   <span class="cmt"># Output: 28</span>
+
+<span class="cmt"># Pass function as argument to another function</span>
+<span class="kw">def</span> <span class="fn">apply</span>(<span class="param">func</span>, <span class="param">x</span>, <span class="param">y</span>):
+    <span class="kw">return</span> <span class="param">func</span>(<span class="param">x</span>, <span class="param">y</span>)
+
+<span class="builtin">print</span>(<span class="fn">apply</span>(<span class="fn">multiply</span>, <span class="num">3</span>, <span class="num">5</span>))   <span class="cmt"># Output: 15</span></pre></div>
+    <div class="grid-2">
+      <div class="concept-card"><h4>🧩 First-Class Functions</h4><p>Functions can be assigned to variables, passed as arguments, returned from functions, and stored in lists/dicts.</p></div>
+      <div class="concept-card"><h4>🔄 Function Reference</h4><p>Writing <code>multiply</code> without <code>()</code> gives you a reference to the function object. Writing <code>multiply()</code> calls it.</p></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ FLASHCARDS ═══════════════════ -->
+<div id="tab-flashcards" class="tab-panel">
+<div class="content">
+  <div class="section-title">🃏 Flashcards</div>
+  <div class="section-sub">Click a card to reveal the answer. Use arrows to navigate. Earn XP for each card you study!</div>
+  <div class="flashcard-wrap">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-inner">
+        <div class="fc-front">
+          <div class="fc-label">Question <span id="fc-num">1</span> / <span id="fc-total">30</span></div>
+          <div class="fc-question" id="fc-question">What keyword is used to define a function in Python?</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-label">Answer</div>
+          <div class="fc-answer" id="fc-answer">The <strong>def</strong> keyword</div>
+          <div class="fc-code" id="fc-code">def function_name():</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px">
+      <button class="btn" onclick="prevCard()">◀ Prev</button>
+      <div class="fc-progress" id="fc-prog">Card 1 of 30</div>
+      <button class="btn primary" onclick="nextCard()">Next ▶</button>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+      <button class="btn success" onclick="markKnown()">✓ I know this</button>
+      <button class="btn danger" onclick="markUnknown()">✗ Study again</button>
+      <button class="btn" onclick="shuffleCards()">🔀 Shuffle</button>
+    </div>
+    <div id="fc-known-count" style="font-size:.8rem;color:var(--muted);font-family:'JetBrains Mono',monospace">Known: 0 / 30</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ GAME ═══════════════════ -->
+<div id="tab-game" class="tab-panel">
+<div class="content">
+  <div class="section-title">🎮 Code Blitz</div>
+  <div class="section-sub">Answer as fast as possible! Each correct answer earns points. Faster = more XP. You have 3 lives and 12 seconds per question.</div>
+  <div class="game-wrap">
+    <div id="game-start-screen" style="text-align:center;padding:60px 20px">
+      <div style="font-size:4rem;margin-bottom:16px">⚡</div>
+      <div style="font-size:1.8rem;font-weight:800;margin-bottom:8px">Code Blitz</div>
+      <div style="color:var(--muted);margin-bottom:32px;font-size:.9rem">Test your Python Functions knowledge at speed!</div>
+      <button class="btn primary" style="font-size:1rem;padding:14px 32px" onclick="startGame()">▶ Start Game</button>
+    </div>
+    <div id="game-play-area" style="display:none">
+      <div class="game-header">
+        <div><div class="game-score" id="g-score">0</div><div style="font-size:.7rem;color:var(--muted)">SCORE</div></div>
+        <div id="g-streak-wrap" style="display:none"><div class="streak-badge" id="g-streak">🔥 Streak: 0</div></div>
+        <div><div class="game-lives" id="g-lives">❤️❤️❤️</div><div style="font-size:.7rem;color:var(--muted);text-align:right">LIVES</div></div>
+      </div>
+      <div class="timer-bar"><div class="timer-fill" id="g-timer-bar" style="width:100%"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+        <div class="pill" id="g-qnum">Q 1 / 30</div>
+        <div class="game-timer" id="g-timer">12</div>
+      </div>
+      <div class="game-card">
+        <div class="q-topic" id="g-topic">Topic</div>
+        <div class="game-question" id="g-question">Question loads here...</div>
+        <div class="game-code" id="g-code" style="display:none"></div>
+      </div>
+      <div class="game-options" id="g-options"></div>
+    </div>
+    <div class="game-over" id="game-over-screen">
+      <div style="font-size:2rem;margin-bottom:16px">🏆</div>
+      <div class="big-score" id="final-score">0</div>
+      <div style="color:var(--muted);margin-top:8px">points</div>
+      <div style="margin:20px 0;font-size:.9rem;color:var(--muted)" id="final-msg"></div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn primary" onclick="startGame()">▶ Play Again</button>
+        <button class="btn" onclick="showTab('quiz')">📝 Take Full Quiz</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ QUIZ ═══════════════════ -->
+<div id="tab-quiz" class="tab-panel">
+<div class="content">
+  <div class="section-title">📝 75-Item Comprehensive Quiz</div>
+  <div class="section-sub">Complete all 75 questions. Answers are revealed after each selection. Live score tracked throughout!</div>
+
+  <div class="quiz-header">
+    <div class="quiz-stats">
+      <div class="stat-box correct"><div class="val" id="q-correct">0</div><div class="lbl">Correct</div></div>
+      <div class="stat-box wrong"><div class="val" id="q-wrong">0</div><div class="lbl">Wrong</div></div>
+      <div class="stat-box score"><div class="val" id="q-score">0%</div><div class="lbl">Score</div></div>
+      <div class="stat-box"><div class="val" id="q-remain" style="color:var(--blue)">75</div><div class="lbl">Remaining</div></div>
+    </div>
+    <button class="btn danger" onclick="resetQuiz()">🔄 Reset</button>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="q-progress" style="width:0%"></div></div>
+  <div id="quiz-questions"></div>
+  <div class="results-box" id="quiz-results">
+    <div style="font-size:3rem;margin-bottom:12px">🎓</div>
+    <div class="results-grade" id="results-grade">A</div>
+    <div class="results-pct" id="results-pct">85% — 64/75</div>
+    <div class="results-msg" id="results-msg"></div>
+    <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn primary" onclick="resetQuiz()">🔄 Retake Quiz</button>
+      <button class="btn" onclick="showTab('flashcards')">🃏 Review Flashcards</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ─────────────────────────────────────────
+// TAB NAVIGATION
+// ─────────────────────────────────────────
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const btns=[...document.querySelectorAll('.tab-btn')];
+  const map={overview:0,flowchart:1,topics:2,flashcards:3,game:4,quiz:5};
+  if(map[id]!==undefined) btns[map[id]].classList.add('active');
+}
+
+function showSubtab(id){
+  document.querySelectorAll('.subtab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('subtab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function copyCode(btn){
+  const pre=btn.nextElementSibling;
+  navigator.clipboard.writeText(pre.textContent).then(()=>{
+    btn.textContent='Copied!';btn.style.color='var(--green)';
+    setTimeout(()=>{btn.textContent='Copy';btn.style.color='';},2000);
+  });
+}
+
+// ─────────────────────────────────────────
+// XP SYSTEM
+// ─────────────────────────────────────────
+let globalXP=0;
+function addXP(n){
+  globalXP+=n;
+  document.getElementById('global-xp').textContent=globalXP;
+}
+
+// ─────────────────────────────────────────
+// FLASHCARD DATA
+// ─────────────────────────────────────────
+const flashcards=[
+  {q:"What keyword is used to define a function in Python?",a:"The <strong>def</strong> keyword",c:"def function_name():"},
+  {q:"What is the difference between a parameter and an argument?",a:"A <strong>parameter</strong> is the variable in the function definition. An <strong>argument</strong> is the actual value passed when calling.",c:"def f(param):  #param=parameter\nf(arg)         #arg=argument"},
+  {q:"What does the return statement do?",a:"It <strong>exits the function</strong> and optionally sends a value back to the caller.",c:"def f(x):\n    return x * 2"},
+  {q:"What happens if a function has no return statement?",a:"The function returns <strong>None</strong> implicitly.",c:"def f(): pass\nprint(f())  # None"},
+  {q:"How do you define a function with a default argument?",a:"Use the <strong>assignment operator =</strong> in the parameter list.",c:"def greet(name='World'):\n    print(f'Hello, {name}!')"},
+  {q:"What is a *args parameter?",a:"It accepts an <strong>unknown number of positional arguments</strong> and packages them as a tuple.",c:"def f(*args):  # args is a tuple\n    for a in args: print(a)"},
+  {q:"What is a **kwargs parameter?",a:"It accepts an <strong>unknown number of keyword arguments</strong> and packages them as a dictionary.",c:"def f(**kwargs):  # kwargs is a dict\n    print(kwargs['key'])"},
+  {q:"What is the pass statement used for in a function?",a:"It is a <strong>placeholder</strong> for an empty function body to avoid syntax errors.",c:"def empty_func():\n    pass  # valid!"},
+  {q:"Can a Python function return multiple values?",a:"Yes! Separate return values with commas. They are returned as a <strong>tuple</strong>.",c:"def f():\n    return 1, 2\nx, y = f()"},
+  {q:"What does it mean that functions are 'objects' in Python?",a:"Functions can be <strong>assigned to variables</strong>, passed as arguments, and stored in data structures.",c:"operation = multiply\nprint(operation(4, 7))"},
+  {q:"How does a keyword argument differ from a positional argument?",a:"Keyword arguments use <strong>name=value</strong> syntax. Order doesn't matter — matched by name not position.",c:"my_func(child1='Emil', child3='Linus')"},
+  {q:"What symbol goes before a parameter to make it accept arbitrary keyword args?",a:"A <strong>double asterisk **</strong> before the parameter name.",c:"def f(**kwargs): pass"},
+  {q:"What symbol goes before a parameter to make it accept arbitrary positional args?",a:"A <strong>single asterisk *</strong> before the parameter name.",c:"def f(*args): pass"},
+  {q:"What does calling a function mean?",a:"Executing the function's code block by using its name followed by parentheses.",c:"my_function()  # calling"},
+  {q:"What character ends the function header line?",a:"A <strong>colon :</strong> ends the function definition header.",c:"def my_func():  # colon!"},
+  {q:"Where is the input parameter placed in a function definition?",a:"Inside the <strong>parentheses ()</strong> of the function definition.",c:"def f(parameter):  # here"},
+  {q:"What type of data does *args collect into?",a:"A <strong>tuple</strong> of all positional arguments.",c:"def f(*a): print(type(a))  # <class 'tuple'>"},
+  {q:"What type of data does **kwargs collect into?",a:"A <strong>dictionary</strong> of all keyword arguments.",c:"def f(**kw): print(type(kw))  # <class 'dict'>"},
+  {q:"Can you pass a list as a function argument?",a:"Yes! Any data type (string, number, list, dict) can be passed as an argument.",c:"def f(lst): ...\nf(['a','b','c'])"},
+  {q:"What is a user-defined function?",a:"A function that <strong>you create</strong> yourself using the def keyword (as opposed to built-in functions like print()).",c:"def my_custom_func():\n    pass"},
+  {q:"Give two benefits of using functions.",a:"1. <strong>Code reuse</strong> — write once, use many times. 2. <strong>Modularity</strong> — break code into manageable pieces.",c:"# No code needed — conceptual"},
+  {q:"What is the quadEquation function in the lesson an example of?",a:"A function that <strong>returns multiple values</strong> (both roots x1 and x2 of a quadratic equation).",c:"def quadEquation(a,b,c):\n    return x1, x2"},
+  {q:"In def calculateTotal(amount, discountPercentage=0), what is 0?",a:"<strong>0 is the default value</strong> for discountPercentage. Used when no discount is provided.",c:"calculateTotal(500)  # discount=0"},
+  {q:"How do you access the second element from *args inside a function?",a:"Use index notation: <strong>args[1]</strong> (zero-indexed).",c:"def f(*kids):\n    print(kids[1])  # 2nd item"},
+  {q:"What is a built-in function? Give an example.",a:"A function <strong>already provided by Python</strong>. Examples: print(), len(), range(), int(), input().",c:"print('hello')  # built-in"},
+  {q:"What does 'code block starts with colon(:)' mean?",a:"After writing <code>def f():</code>, everything indented below belongs to that function's code block.",c:"def f():\n    # indented = inside function"},
+  {q:"Can the same function be called multiple times?",a:"Yes! That's the whole point of <strong>code reuse</strong>. Call it as many times as needed.",c:"my_function()\nmy_function()\nmy_function()"},
+  {q:"What does the 'if __name__ == __main__' block do?",a:"It ensures the code inside only runs when the <strong>script is executed directly</strong>, not when imported as a module.",c:"if __name__ == '__main__':\n    main()"},
+  {q:"What is the output of: def f(x): return 5*x | print(f(3))",a:"<strong>15</strong>. The function multiplies x by 5, so f(3) = 5×3 = 15.",c:"def f(x): return 5*x\nprint(f(3))  # 15"},
+  {q:"How do you make a function that accepts any number of arguments of unknown count?",a:"Use <strong>*args</strong> for positional or <strong>**kwargs</strong> for keyword arguments.",c:"def f(*args): ...\ndef g(**kwargs): ..."},
+];
+
+let fcIndex=0,fcKnown=new Set(),fcIsFlipped=false;
+let fcOrder=[...Array(flashcards.length).keys()];
+
+function updateFC(){
+  const idx=fcOrder[fcIndex];
+  document.getElementById('fc-question').innerHTML=flashcards[idx].q;
+  document.getElementById('fc-answer').innerHTML=flashcards[idx].a;
+  document.getElementById('fc-code').textContent=flashcards[idx].c||'';
+  document.getElementById('fc-num').textContent=fcIndex+1;
+  document.getElementById('fc-total').textContent=fcOrder.length;
+  document.getElementById('fc-prog').textContent=`Card ${fcIndex+1} of ${fcOrder.length}`;
+  document.getElementById('fc-known-count').textContent=`Known: ${fcKnown.size} / ${flashcards.length}`;
+  const fc=document.getElementById('flashcard');
+  fc.classList.remove('flipped');fcIsFlipped=false;
+}
+function flipCard(){
+  document.getElementById('flashcard').classList.toggle('flipped');
+  fcIsFlipped=!fcIsFlipped;
+  if(fcIsFlipped)addXP(1);
+}
+function nextCard(){
+  fcIndex=(fcIndex+1)%fcOrder.length;updateFC();
+}
+function prevCard(){
+  fcIndex=(fcIndex-1+fcOrder.length)%fcOrder.length;updateFC();
+}
+function markKnown(){
+  fcKnown.add(fcOrder[fcIndex]);addXP(3);
+  document.getElementById('fc-known-count').textContent=`Known: ${fcKnown.size} / ${flashcards.length}`;
+  nextCard();
+}
+function markUnknown(){nextCard();}
+function shuffleCards(){
+  fcOrder=fcOrder.sort(()=>Math.random()-.5);fcIndex=0;updateFC();
+}
+updateFC();
+
+// ─────────────────────────────────────────
+// GAME DATA
+// ─────────────────────────────────────────
+const gameQuestions=[
+  {t:"Functions Basics",q:"What keyword defines a function in Python?",code:"",opts:["func","def","function","define"],ans:1},
+  {t:"Syntax",q:"What character ends a function header?",code:"def my_func()",opts:["semicolon ;","hash #","colon :","dot ."],ans:2},
+  {t:"Calling",q:"How do you call a function named 'greet'?",code:"",opts:["greet","call greet","greet()","run greet"],ans:2},
+  {t:"Return",q:"What does this function return when called with f(4)?",code:"def f(x):\n    return x * 5",opts:["4","5","20","9"],ans:2},
+  {t:"*args",q:"What data type does *args collect arguments into?",code:"",opts:["list","dict","tuple","set"],ans:2},
+  {t:"**kwargs",q:"What data type does **kwargs collect arguments into?",code:"",opts:["list","dict","tuple","set"],ans:1},
+  {t:"Default Args",q:"What is the output?",code:"def f(x=10):\n    return x\nprint(f())",opts:["None","0","10","Error"],ans:2},
+  {t:"pass",q:"Why is 'pass' used in an empty function?",code:"def f():\n    pass",opts:["To print nothing","To avoid syntax error","To return None","To end program"],ans:1},
+  {t:"Return",q:"What does Python return if no return statement exists?",code:"",opts:["0","False","None","undefined"],ans:2},
+  {t:"Keyword Args",q:"What is the output?",code:"def f(a,b):\n    print(b)\nf(b='hi',a='yo')",opts:["yo","hi","a","Error"],ans:1},
+  {t:"Multiple Return",q:"What type does Python use to pack multiple return values?",code:"return x1, x2",opts:["list","dict","tuple","set"],ans:2},
+  {t:"Functions as Objects",q:"What does this do?",code:"op = multiply",opts:["Calls multiply","Assigns fn to var","Deletes multiply","Imports multiply"],ans:1},
+  {t:"Syntax",q:"Where is the input parameter placed?",code:"def my_func( ??? ):",opts:["after colon","before def","inside parentheses","in the body"],ans:2},
+  {t:"Args",q:"What is 'name' in this definition?",code:"def greet(name):",opts:["argument","return value","parameter","keyword"],ans:2},
+  {t:"Args",q:"What is 'Alice' in this call?",code:"greet('Alice')",opts:["parameter","argument","return","object"],ans:1},
+  {t:"*args",q:"What does kids[2] access?",code:"def f(*kids):\n    print(kids[2])\nf('Emil','Tobias','Linus')",opts:["Emil","Tobias","Linus","Error"],ans:2},
+  {t:"Default",q:"What is printed?",code:"def f(a, disc=0):\n    return a - disc\nprint(f(500))",opts:["0","500","disc","500.0"],ans:1},
+  {t:"Built-ins",q:"Which is a built-in Python function?",code:"",opts:["mysum()","square()","print()","greet()"],ans:2},
+  {t:"Return",q:"What are the outputs of f(3), f(5), f(9)?",code:"def f(x):\n    return 5*x",opts:["5,10,15","15,25,45","3,5,9","10,20,30"],ans:1},
+  {t:"pass",q:"Which correctly uses pass?",code:"",opts:["def f(): null","def f(): #empty","def f(): pass","def f(): void"],ans:2},
+  {t:"Calling",q:"What mistake is in this code?",code:"def greet():\n    print('hi')\ngreet  # no parens",opts:["Nothing","Missing ()","Wrong name","Wrong indent"],ans:1},
+  {t:"**kwargs",q:"How do you access 'lname' from **kid?",code:"def f(**kid):\n    print( ??? )",opts:["kid.lname","kid[0]","kid['lname']","kid.get.lname"],ans:2},
+  {t:"Multiple Return",q:"This function solves which equation type?",code:"def quadEquation(a,b,c):\n    x1=(-b+sqrt(b**2-4*a*c))/(2*a)",opts:["Linear","Quadratic","Cubic","Exponential"],ans:1},
+  {t:"Functions as Objects",q:"What will this print?",code:"def mul(x,y): return x*y\nop=mul\nprint(op(4,7))",opts:["11","28","47","Error"],ans:1},
+  {t:"Passing List",q:"What is the output?",code:"def f(food):\n    for x in food: print(x)\nf(['apple','banana'])",opts:["['apple','banana']","apple banana","apple\nbanana","Error"],ans:2},
+  {t:"Keyword",q:"What is the output?",code:"def f(c3,c2,c1):\n    print('Youngest: '+c3)\nf(c1='E',c2='T',c3='L')",opts:["Youngest: E","Youngest: T","Youngest: L","Error"],ans:2},
+  {t:"Default",q:"Where must default arguments appear?",code:"",opts:["Before required args","After required args","Anywhere","In return statement"],ans:1},
+  {t:"Syntax",q:"What does 'def' stand for?",code:"",opts:["define","default","defer","declarative"],ans:0},
+  {t:"*args",q:"What does mysum(5,2,9,4) return?",code:"def mysum(*a):\n    total=0\n    for e in a: total+=e\n    return total",opts:["5","20","4","9"],ans:1},
+  {t:"Functions",q:"Which statement about functions is FALSE?",code:"",opts:["They promote code reuse","They improve modularity","They can only be called once","They can return values"],ans:2},
+];
+
+let gScore=0,gLives=3,gCurrent=0,gStreak=0,gTimer=null,gTimeLeft=12,gAnswered=false;
+let gQuestions=[];
+
+function startGame(){
+  gQuestions=[...gameQuestions].sort(()=>Math.random()-.5);
+  gScore=0;gLives=3;gCurrent=0;gStreak=0;gAnswered=false;
+  document.getElementById('game-start-screen').style.display='none';
+  document.getElementById('game-play-area').style.display='block';
+  document.getElementById('game-over-screen').classList.remove('show');
+  renderGameQ();
+}
+
+function renderGameQ(){
+  if(gCurrent>=gQuestions.length){endGame();return;}
+  const q=gQuestions[gCurrent];
+  gAnswered=false;
+  document.getElementById('g-score').textContent=gScore;
+  document.getElementById('g-lives').textContent='❤️'.repeat(gLives)+'🖤'.repeat(3-gLives);
+  document.getElementById('g-qnum').textContent=`Q ${gCurrent+1} / ${gQuestions.length}`;
+  document.getElementById('g-topic').textContent=q.t;
+  document.getElementById('g-question').textContent=q.q;
+  const codeEl=document.getElementById('g-code');
+  if(q.code){codeEl.style.display='block';codeEl.textContent=q.code;}
+  else codeEl.style.display='none';
+  const opts=document.getElementById('g-options');
+  opts.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const btn=document.createElement('button');
+    btn.className='game-opt';btn.textContent=o;
+    btn.onclick=()=>answerGame(i,btn);
+    opts.appendChild(btn);
+  });
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(gTimer);gTimeLeft=12;
+  const bar=document.getElementById('g-timer-bar');
+  const t=document.getElementById('g-timer');
+  t.textContent=gTimeLeft;bar.style.width='100%';
+  gTimer=setInterval(()=>{
+    gTimeLeft--;t.textContent=gTimeLeft;
+    bar.style.width=(gTimeLeft/12*100)+'%';
+    if(gTimeLeft<=0){clearInterval(gTimer);if(!gAnswered)timeOut();}
+  },1000);
+}
+
+function answerGame(i,btn){
+  if(gAnswered)return;
+  gAnswered=true;clearInterval(gTimer);
+  const q=gQuestions[gCurrent];
+  const allBtns=document.querySelectorAll('.game-opt');
+  allBtns.forEach(b=>b.style.pointerEvents='none');
+  if(i===q.ans){
+    btn.classList.add('correct-anim');
+    const pts=Math.max(5,Math.round(10*(gTimeLeft/12)));
+    gScore+=pts+gStreak*2;gStreak++;
+    if(gStreak>1){
+      document.getElementById('g-streak-wrap').style.display='block';
+      document.getElementById('g-streak').textContent=`🔥 Streak: ${gStreak}`;
+    }
+    addXP(pts);
+  }else{
+    btn.classList.add('wrong-anim');
+    allBtns[q.ans].classList.add('correct-anim');
+    gLives--;gStreak=0;
+    document.getElementById('g-streak-wrap').style.display='none';
+    if(gLives<=0){setTimeout(endGame,800);return;}
+  }
+  setTimeout(()=>{gCurrent++;renderGameQ();},900);
+}
+
+function timeOut(){
+  gAnswered=true;
+  const q=gQuestions[gCurrent];
+  document.querySelectorAll('.game-opt').forEach((b,i)=>{
+    b.style.pointerEvents='none';
+    if(i===q.ans)b.classList.add('correct-anim');
+  });
+  gLives--;gStreak=0;
+  document.getElementById('g-streak-wrap').style.display='none';
+  if(gLives<=0){setTimeout(endGame,800);return;}
+  setTimeout(()=>{gCurrent++;renderGameQ();},900);
+}
+
+function endGame(){
+  clearInterval(gTimer);
+  document.getElementById('game-play-area').style.display='none';
+  const ov=document.getElementById('game-over-screen');
+  ov.classList.add('show');
+  document.getElementById('final-score').textContent=gScore;
+  const pct=Math.round(gCurrent>0?((gQuestions.length-gLives)/gQuestions.length*100):0);
+  const msgs=['Keep studying! Review the flashcards.','Good effort! Practice makes perfect.','Nice work! You know your Python functions!','Excellent! You are a Python Functions pro! 🐍'];
+  document.getElementById('final-msg').textContent=gScore>300?msgs[3]:gScore>150?msgs[2]:gScore>80?msgs[1]:msgs[0];
+  addXP(gScore);
+}
+
+// ─────────────────────────────────────────
+// QUIZ DATA (75 questions)
+// ─────────────────────────────────────────
+const quizData=[
+  // WHAT IS A FUNCTION (1-8)
+  {topic:"Functions Basics",q:"What is a function in Python?",opts:["A variable that stores text","A block of organized, reusable code that performs a single related action","A loop that repeats code","A method of printing output"],ans:1,exp:"A function is a block of organized, reusable code that is used to perform a single, related action."},
+  {topic:"Functions Basics",q:"Functions provide which two main benefits?",opts:["Speed and memory","Modularity and code reuse","Loops and conditions","Input and output"],ans:1,exp:"Functions provide better modularity for applications and a high degree of code reusing."},
+  {topic:"Functions Basics",q:"Which are examples of built-in Python functions?",opts:["square(), cube()","mysum(), mymax()","print(), int(), input()","def(), return()"],ans:2,exp:"Python's built-in functions include print(), int(), input(), len(), range(), etc."},
+  {topic:"Functions Basics",q:"What are user-defined functions?",opts:["Functions built into Python","Functions from libraries","Functions you create yourself using def","Functions imported from modules"],ans:2,exp:"User-defined functions are functions you create yourself using the def keyword, as opposed to built-in functions."},
+  {topic:"Functions Basics",q:"Which statement about Python functions is CORRECT?",opts:["A function can only be called once","A function definition automatically runs its code","Functions improve code organization and reusability","Functions can only print text"],ans:2,exp:"Functions improve code organization and reusability — you can call them multiple times without rewriting the code."},
+  {topic:"Functions Basics",q:"Which statement about functions is FALSE?",opts:["They promote code reuse","They provide better modularity","They can only accept one argument","They can be user-defined"],ans:2,exp:"Functions can accept zero or more arguments — there's no one-argument limit."},
+  {topic:"Functions Basics",q:"When does a function's code execute?",opts:["When it is defined","When it is called/invoked","When Python starts","Automatically after def"],ans:1,exp:"A function's code only executes when the function is called (invoked) with its name and parentheses."},
+  {topic:"Functions Basics",q:"Functions are like ___ in real life that you can use repeatedly.",opts:["files","recipes","variables","loops"],ans:1,exp:"Functions are like recipes — defined once and reused whenever needed without rewriting the steps."},
+
+  // SYNTAX (9-16)
+  {topic:"Syntax",q:"What keyword is used to define a function?",opts:["function","fn","define","def"],ans:3,exp:"The keyword 'def' introduces a function definition in Python."},
+  {topic:"Syntax",q:"What character must end a function definition header?",opts:["semicolon ;","comma ,","colon :","period ."],ans:2,exp:"The code block within every function starts with a colon (:) at the end of the def line."},
+  {topic:"Syntax",q:"Where is the input parameter placed in a function definition?",opts:["After the colon","Inside the parentheses","Before def","In the function body"],ans:1,exp:"Input parameters are placed within the parentheses() in the function definition."},
+  {topic:"Syntax",q:"Which is the correct syntax for defining a function?",opts:["function myFunc():","def myFunc():","fn myFunc():","define myFunc():"],ans:1,exp:"The correct Python syntax uses 'def' keyword: def function_name(parameters):"},
+  {topic:"Syntax",q:"What does the return statement do?",opts:["Prints a value","Repeats the function","Exits the function and optionally returns a value","Imports a module"],ans:2,exp:"The return statement exits a function block and can also send back a value to the caller."},
+  {topic:"Syntax",q:"Can the return statement be used with no argument?",opts:["No, always needs a value","Yes, it just exits the function","No, it causes an error","Yes, but only in loops"],ans:1,exp:"We can use return with no argument — it just exits the function and returns None."},
+  {topic:"Syntax",q:"What is the minimum required content for a valid function body?",opts:["At least one print()","At least one variable","At least one statement or pass","At least one return"],ans:2,exp:"A function body must have at least one statement. If empty, use 'pass' as a placeholder."},
+  {topic:"Syntax",q:"Which correctly defines a function with no parameters?",opts:["def myFunc:","def myFunc[]","def myFunc()","def myFunc():"],ans:3,exp:"Even with no parameters, parentheses () are required, and the line must end with a colon."},
+
+  // CALLING (17-22)
+  {topic:"Calling a Function",q:"How do you call a function named 'greet'?",opts:["greet","call greet()","greet()","execute greet"],ans:2,exp:"To call a function, write its name followed by parentheses: greet()"},
+  {topic:"Calling a Function",q:"From where can a defined function be called?",opts:["Only from the same file","Only from the main program","From another function, program, or Python prompt","Only once per program"],ans:2,exp:"Once defined, a function can be called from another function, program, or even the Python prompt."},
+  {topic:"Calling a Function",q:"What is 'greet' (without parentheses) referring to?",opts:["Calling the function","The function's return value","A reference to the function object","A syntax error"],ans:2,exp:"Without parentheses, 'greet' references the function object itself but does not call it."},
+  {topic:"Calling a Function",q:"What is the output of this code?\ndef func1():\n    print('I am learning Python')\nfunc1()",opts:["Nothing","func1","I am learning Python","I am learning Python Function"],ans:2,exp:"func1() calls the function which executes print('I am learning Python')."},
+  {topic:"Calling a Function",q:"How many times can the same function be called?",opts:["Once","Twice","Three times","As many times as needed"],ans:3,exp:"A function can be called as many times as needed — this is the main benefit of code reuse."},
+  {topic:"Calling a Function",q:"Which line CALLS the function (not defines it)?",opts:["def my_function():","    print('Hello')","my_function()","return 'Hello'"],ans:2,exp:"my_function() with parentheses is the function call. The def line is the definition."},
+
+  // PARAMETERS & ARGUMENTS (23-31)
+  {topic:"Arguments & Parameters",q:"A parameter is...",opts:["The value passed when calling","The variable in the function definition","The return value","The function name"],ans:1,exp:"A parameter is the variable listed inside the parentheses in the function definition."},
+  {topic:"Arguments & Parameters",q:"An argument is...",opts:["The variable in the definition","The actual value passed when calling","The function name","The return statement"],ans:1,exp:"An argument is the actual value you pass to the function when calling it."},
+  {topic:"Arguments & Parameters",q:"In 'def greet(name):', what is 'name'?",opts:["argument","return value","parameter","built-in function"],ans:2,exp:"'name' is the parameter — the variable in the function definition that will receive the argument value."},
+  {topic:"Arguments & Parameters",q:"In 'greet(\"Alice\")', what is '\"Alice\"'?",opts:["parameter","keyword","argument","return value"],ans:2,exp:"'Alice' is the argument — the actual value passed to the function when calling it."},
+  {topic:"Arguments & Parameters",q:"What does this print?\ndef my_function(fname):\n    print(fname)\nmy_function('Bob')",opts:["fname","my_function","Bob","Nothing"],ans:2,exp:"The argument 'Bob' is passed to parameter fname, so print(fname) outputs Bob."},
+  {topic:"Arguments & Parameters",q:"How many parameters can a Python function have?",opts:["Maximum 1","Maximum 5","Maximum 10","As many as needed"],ans:3,exp:"A Python function can have as many parameters as needed."},
+  {topic:"Arguments & Parameters",q:"What happens if you pass fewer arguments than parameters (with no defaults)?",opts:["Python uses None","Python uses 0","A TypeError is raised","The function is skipped"],ans:2,exp:"If you pass fewer arguments than required parameters, Python raises a TypeError."},
+  {topic:"Arguments & Parameters",q:"Which exercise from the lesson demonstrates arguments?\ndef greet(name):\n    print(f'Hello, {name}!')\ngreet('Alice')",opts:["This prints 'Hello, name!'","This prints 'Hello, Alice!'","This raises an error","This returns 'Alice'"],ans:1,exp:"greet('Alice') passes 'Alice' as argument to name parameter, so 'Hello, Alice!' is printed."},
+  {topic:"Arguments & Parameters",q:"Information can be passed into functions as ___.",opts:["variables","objects","arguments","loops"],ans:2,exp:"Information can be passed into functions as arguments."},
+
+  // RETURN VALUES (32-38)
+  {topic:"Return Values",q:"To let a function return a value, use the ___ statement.",opts:["send","output","return","yield"],ans:2,exp:"The return statement is used to send a value back from a function to the caller."},
+  {topic:"Return Values",q:"What is the output?\ndef f(x):\n    return 5 * x\nprint(f(3))",opts:["3","5","15","x"],ans:2,exp:"f(3) calculates 5 * 3 = 15. The return sends back 15, which print() displays."},
+  {topic:"Return Values",q:"What is the output?\ndef f(x):\n    return 5 * x\nprint(f(5))",opts:["5","10","25","50"],ans:2,exp:"f(5) = 5 * 5 = 25"},
+  {topic:"Return Values",q:"What is the output?\ndef f(x):\n    return 5 * x\nprint(f(9))",opts:["9","45","14","5"],ans:1,exp:"f(9) = 5 * 9 = 45"},
+  {topic:"Return Values",q:"What does Python return from a function with no return statement?",opts:["0","False","None","An error"],ans:2,exp:"If there is no return statement, Python returns None implicitly."},
+  {topic:"Return Values",q:"What is the difference between Program 1 and Program 2 in Exercise 1?",opts:["P1 uses def, P2 doesn't","P1 prints inside, P2 uses return","P1 is faster","P2 has no parameters"],ans:1,exp:"Program 1 prints the result inside the function. Program 2 uses return to send the value back, which is more flexible."},
+  {topic:"Return Values",q:"Which program design is more flexible and reusable?",opts:["Printing inside the function","Using return to send back a value","Using global variables","Using pass"],ans:1,exp:"Using return is more flexible because the caller can then use the returned value in calculations, conditions, or storage."},
+
+  // DEFAULT ARGUMENTS (39-44)
+  {topic:"Default Arguments",q:"How do you set a default value for a parameter?",opts:["def f(x:10)","def f(x=10)","def f(x->10)","def f(x default 10)"],ans:1,exp:"Use the assignment operator = to provide a default value: def f(x=10)"},
+  {topic:"Default Arguments",q:"What is printed?\ndef f(x=10):\n    return x\nprint(f())",opts:["None","Error","0","10"],ans:3,exp:"No argument is passed, so x uses its default value of 10. Returns and prints 10."},
+  {topic:"Default Arguments",q:"In calculateTotal(amount, discountPercentage=0), what is the default discount?",opts:["None","100","0","10"],ans:2,exp:"discountPercentage=0 means if no discount is provided, 0% discount is applied."},
+  {topic:"Default Arguments",q:"Where must default arguments appear in the parameter list?",opts:["Before non-default args","After non-default (required) args","Anywhere","First position"],ans:1,exp:"Default arguments must come after non-default arguments. You cannot place a default parameter before a required one."},
+  {topic:"Default Arguments",q:"What is the output?\ndef calculateTotal(amount, disc=0):\n    return amount - (disc/100 * amount)\nprint(calculateTotal(500))",opts:["450.0","500.0","0","500"],ans:1,exp:"No discount passed, so disc=0. 500 - (0/100 * 500) = 500 - 0 = 500.0"},
+  {topic:"Default Arguments",q:"What is the output?\ndef calculateTotal(amount, disc=0):\n    return amount - (disc/100 * amount)\nprint(calculateTotal(500, 10))",opts:["500","490","450.0","400"],ans:2,exp:"disc=10. 500 - (10/100 * 500) = 500 - 50 = 450.0"},
+
+  // KEYWORD ARGUMENTS (45-50)
+  {topic:"Keyword Arguments",q:"Keyword arguments use which syntax?",opts:["name: value","name-> value","name = value","name :: value"],ans:2,exp:"Keyword arguments use the key=value syntax when calling a function."},
+  {topic:"Keyword Arguments",q:"What is the advantage of keyword arguments?",opts:["Faster execution","Order of arguments doesn't matter","Fewer parameters needed","Automatic type conversion"],ans:1,exp:"With keyword arguments, the order doesn't matter because values are matched by name, not position."},
+  {topic:"Keyword Arguments",q:"What is the output?\ndef f(c3,c2,c1):\n    print('Youngest: '+c3)\nf(c1='Emil',c2='Tobias',c3='Linus')",opts:["Youngest: Emil","Youngest: Tobias","Youngest: Linus","Error"],ans:2,exp:"c3='Linus' is passed by keyword. The function prints 'Youngest: Linus'."},
+  {topic:"Keyword Arguments",q:"Keyword arguments are also known as...",opts:["*args","default args","kwargs","positional args"],ans:2,exp:"Keyword arguments are commonly referred to as kwargs."},
+  {topic:"Keyword Arguments",q:"Can you mix positional and keyword arguments in a call?",opts:["No, must be one type","Yes, positional must come first","Yes, keyword must come first","Only if using *args"],ans:1,exp:"You can mix them, but positional arguments must come before keyword arguments in the call."},
+  {topic:"Keyword Arguments",q:"Which correctly uses keyword arguments?",opts:["f('Emil', 'Tobias', 'Linus')","f(c3='Linus', c1='Emil', c2='Tobias')","f[c1='Emil']","f{c3='Linus'}"],ans:1,exp:"Keyword arguments use name=value inside regular parentheses."},
+
+  // *ARGS/**KWARGS (51-60)
+  {topic:"*args / **kwargs",q:"What does adding * before a parameter do?",opts:["Makes it optional","Allows any number of positional args","Makes it a keyword arg","Makes it return a value"],ans:1,exp:"Adding * before a parameter allows the function to accept an unknown number of positional arguments, packed as a tuple."},
+  {topic:"*args / **kwargs",q:"*args collects arguments into a...",opts:["list","tuple","dictionary","set"],ans:1,exp:"*args collects all extra positional arguments into a tuple."},
+  {topic:"*args / **kwargs",q:"**kwargs collects arguments into a...",opts:["list","tuple","dictionary","set"],ans:2,exp:"**kwargs collects all extra keyword arguments into a dictionary."},
+  {topic:"*args / **kwargs",q:"What is the output?\ndef f(*kids):\n    print('Youngest: ' + kids[2])\nf('Emil','Tobias','Linus')",opts:["Youngest: Emil","Youngest: Tobias","Youngest: Linus","Youngest: kids[2]"],ans:2,exp:"kids is ('Emil','Tobias','Linus'). kids[2] is 'Linus'."},
+  {topic:"*args / **kwargs",q:"What is the output?\ndef mysum(*a):\n    total=0\n    for e in a: total+=e\n    return total\nprint(mysum(5,2,9,4))",opts:["5","4","20","9"],ans:2,exp:"5+2+9+4=20"},
+  {topic:"*args / **kwargs",q:"What does **kid contain after f(fname='Tobias', lname='Refsnes')?",opts:["('Tobias','Refsnes')","{'fname':'Tobias','lname':'Refsnes'}","['Tobias','Refsnes']","'Tobias Refsnes'"],ans:1,exp:"**kwargs collects keyword arguments into a dictionary: {'fname':'Tobias','lname':'Refsnes'}"},
+  {topic:"*args / **kwargs",q:"What is printed?\ndef f(**kid):\n    print('Last name: '+kid['lname'])\nf(fname='Tobias',lname='Refsnes')",opts:["Last name: Tobias","Last name: Refsnes","Last name: kid","Error"],ans:1,exp:"kid['lname'] accesses 'Refsnes' from the dictionary."},
+  {topic:"*args / **kwargs",q:"What does mymax(4,5,7,3,1,8,2) return?",code:"def mymax(a,*b):\n    large=a\n    for e in b:\n        if e>large: large=e\n    return large",opts:["4","7","8","9"],ans:2,exp:"The function finds the maximum among all arguments. 8 is the largest."},
+  {topic:"*args / **kwargs",q:"When would you use *args over a list parameter?",opts:["When you know the exact count","When the number of arguments is unknown","When using keyword names","When returning values"],ans:1,exp:"*args is ideal when the number of arguments is unknown at function definition time."},
+  {topic:"*args / **kwargs",q:"What happens if you access args[0] in a function with *args?",opts:["Returns None","Returns first positional argument","Returns last argument","Causes an error"],ans:1,exp:"args[0] returns the first positional argument passed to the *args parameter (zero-indexed)."},
+
+  // PASSING LIST (61-64)
+  {topic:"Passing a List",q:"What data types can be passed as function arguments?",opts:["Only strings","Only numbers","Only lists","Any data type — strings, numbers, lists, dicts, etc."],ans:3,exp:"You can send any data type as argument — string, number, list, dictionary, tuple, etc."},
+  {topic:"Passing a List",q:"What is the output?\ndef f(food):\n    for x in food: print(x)\nf(['apple','banana','cherry'])",opts:["['apple','banana','cherry']","apple\nbanana\ncherry","apple banana cherry","Error"],ans:1,exp:"The function iterates through the list and prints each item on a separate line."},
+  {topic:"Passing a List",q:"When a list is passed to a function, inside the function it is treated as...",opts:["A string","A tuple","The same data type (a list)","A set"],ans:2,exp:"It will be treated as the same data type inside the function — the list remains a list."},
+  {topic:"Passing a List",q:"Which code correctly passes a list to a function?",opts:["my_function{'a','b'}","my_function('a','b')","my_function(['a','b'])","my_function[['a','b']]"],ans:2,exp:"Pass a list using square brackets inside the function call parentheses: my_function(['a','b'])"},
+
+  // PASS STATEMENT (65-68)
+  {topic:"pass Statement",q:"Why can't a function body be empty in Python?",opts:["Python requires return","Python requires at least one print","Python syntax requires at least one statement","Python requires parameters"],ans:2,exp:"Function definitions cannot be empty. Python syntax requires at least one statement in the body."},
+  {topic:"pass Statement",q:"Which code is valid with an 'empty' function?",opts:["def f(): #empty","def f(): null","def f(): pass","def f(): void"],ans:2,exp:"'pass' is the correct placeholder for an empty function body."},
+  {topic:"pass Statement",q:"The pass statement is used as a...",opts:["loop breaker","error handler","return substitute","placeholder/no-op"],ans:3,exp:"pass is a no-operation placeholder that does nothing — it just lets Python accept an otherwise empty block."},
+  {topic:"pass Statement",q:"Where else besides functions can 'pass' be used?",opts:["Only in functions","In loops, if statements, and classes too","Only in classes","Only in loops"],ans:1,exp:"pass can be used in any block that requires at least one statement: functions, loops, if statements, classes."},
+
+  // MULTIPLE RETURN (69-71)
+  {topic:"Multiple Return",q:"What does the quadEquation function return?",opts:["One root","Two roots (x1 and x2)","The discriminant","A boolean"],ans:1,exp:"quadEquation returns both roots x1 and x2 — an example of returning multiple values."},
+  {topic:"Multiple Return",q:"How are multiple return values received by the caller?",opts:["As a single string","As a list","By tuple unpacking","By dictionary access"],ans:2,exp:"x1, x2 = quadEquation(a,b,c) — this is tuple unpacking of the multiple return values."},
+  {topic:"Multiple Return",q:"What type does 'return x1, x2' create?",opts:["list","tuple","dict","set"],ans:1,exp:"Comma-separated return values are automatically packed into a tuple."},
+
+  // FUNCTIONS AS OBJECTS (72-75)
+  {topic:"Functions as Objects",q:"What does 'operation = multiply' do (without parentheses)?",opts:["Calls multiply immediately","Assigns the function object to 'operation'","Creates a new function","Deletes multiply"],ans:1,exp:"Without parentheses, 'multiply' is a reference to the function object. It's assigned to 'operation' as a value."},
+  {topic:"Functions as Objects",q:"What is the output?\ndef mul(x,y): return x*y\nop=mul\nprint(op(4,7))",opts:["11","28","47","Error"],ans:1,exp:"op is now a reference to mul. op(4,7) calls mul(4,7) = 4*7 = 28."},
+  {topic:"Functions as Objects",q:"Functions in Python are considered...",opts:["Only callable objects","First-class objects that can be stored and passed","Static methods","Keywords"],ans:1,exp:"In Python, functions are first-class objects — they can be assigned to variables, passed as arguments, and stored in data structures."},
+  {topic:"Functions as Objects",q:"What is the difference between 'multiply' and 'multiply()' in Python?",opts:["No difference","multiply is a reference; multiply() calls the function","multiply() is a reference; multiply calls it","Both call the function"],ans:1,exp:"'multiply' without parentheses is a reference to the function object. 'multiply()' actually calls/executes it."},
+];
+
+// ─────────────────────────────────────────
+// QUIZ ENGINE
+// ─────────────────────────────────────────
+let qCorrect=0,qWrong=0,qAnswered=new Array(75).fill(null);
+
+function buildQuiz(){
+  const container=document.getElementById('quiz-questions');
+  container.innerHTML='';
+  quizData.forEach((q,i)=>{
+    const div=document.createElement('div');
+    div.className='quiz-question-block';div.id='qq-'+i;
+    const codeHtml=q.code?`<div class="q-code">${q.code}</div>`:'';
+    div.innerHTML=`
+      <div class="q-num">Question ${i+1} of 75</div>
+      <div class="q-topic">${q.topic}</div>
+      <div class="q-text">${q.q.replace(/\n/g,'<br>')}</div>
+      ${codeHtml}
+      <div class="options" id="opts-${i}">
+        ${q.opts.map((o,j)=>`<button class="option" onclick="selectAnswer(${i},${j},this)">${String.fromCharCode(65+j)}. ${o}</button>`).join('')}
+      </div>
+      <div class="explanation" id="exp-${i}">💡 ${q.exp}</div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function selectAnswer(qi,optIdx,btn){
+  if(qAnswered[qi]!==null)return;
+  qAnswered[qi]=optIdx;
+  const opts=document.querySelectorAll(`#opts-${qi} .option`);
+  opts.forEach(b=>{b.classList.add('revealed');b.style.pointerEvents='none';});
+  const correct=quizData[qi].ans;
+  if(optIdx===correct){
+    btn.classList.add('correct');
+    qCorrect++;addXP(4);
+  }else{
+    btn.classList.add('wrong');
+    opts[correct].classList.add('correct');
+    qWrong++;
+  }
+  document.getElementById('exp-'+qi).classList.add('show');
+  updateQuizStats();
+  if(qAnswered.every(a=>a!==null))showResults();
+}
+
+function updateQuizStats(){
+  const total=qCorrect+qWrong;
+  document.getElementById('q-correct').textContent=qCorrect;
+  document.getElementById('q-wrong').textContent=qWrong;
+  document.getElementById('q-score').textContent=total>0?Math.round(qCorrect/total*100)+'%':'0%';
+  document.getElementById('q-remain').textContent=75-total;
+  document.getElementById('q-progress').style.width=(total/75*100)+'%';
+}
+
+function showResults(){
+  const pct=Math.round(qCorrect/75*100);
+  let grade,msg;
+  if(pct>=90){grade='A';msg='🌟 Outstanding! You have mastered Python Functions!'}
+  else if(pct>=80){grade='B';msg='👍 Great job! You have a solid understanding of functions.'}
+  else if(pct>=70){grade='C';msg='📚 Good effort! Review the topics you missed and try again.'}
+  else if(pct>=60){grade='D';msg='💪 Keep studying! Focus on the flashcards and examples.'}
+  else{grade='F';msg='🔄 Review all topics carefully. Start with the Overview and Flowchart tabs.'}
+  document.getElementById('results-grade').textContent=grade;
+  document.getElementById('results-pct').textContent=`${pct}% — ${qCorrect}/75`;
+  document.getElementById('results-msg').textContent=msg;
+  document.getElementById('quiz-results').classList.add('show');
+  document.getElementById('quiz-results').scrollIntoView({behavior:'smooth'});
+}
+
+function resetQuiz(){
+  qCorrect=0;qWrong=0;qAnswered=new Array(75).fill(null);
+  document.getElementById('quiz-results').classList.remove('show');
+  updateQuizStats();
+  buildQuiz();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
